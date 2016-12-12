@@ -76,20 +76,37 @@ Shader "Hidden/Ray Marching/Ray Marching"
 			// float4 mappedColor = _TransferFn[(int)(src.a * 100.0)];
 			// src = mappedColor;
 			src.a *= saturate(_Opacity * border);
-			if (src.a < 0.33 || src.a > 0.34) {
-				src.a = 0;
-			} else {
-				src.a = 0.5;
-			}
-			if(src.a < 0.2f && src.a > 0.1f) {
-				src.r = 0.00f;
+			if(src.a > 0.25f) {
+				src.r = 0.04f;
 				src.g = 0.04f;
 				src.b = 0.00f;
+				src.a = 0.00f;
+			}
+			if(src.a > 0.2f && src.a < 0.25f) {
+				src.r = 0.1f;
+				src.g = 0.6f;
+				src.b = 0.5f;
+				src.a = 0.02f;
+			}
+			if(src.a > 0.15f && src.a < 0.2f) {
+				src.r = 0.6f;
+				src.g = 0.3f;
+				src.b = 0.2f;
+				src.a = 0.02f;
+			}
+			if(src.a > 0.1f && src.a < 0.15f) {
+				src.r = 0.1f;
+				src.g = 0.9f;
+				src.b = 0.1f;
+				src.a = 0.02f;
+			}
+			if(src.a > 0.08f && src.a < 0.1f) {
+				src.r = 0.9f;
+				src.g = 0.1f;
+				src.b = 0.1f;
+				src.a = 0.02f;
 			}
 			src.rgb *= src.a;
-			// src.r = 0.01f;
-			// src.g = 0.05f;
-			// src.b = 0.07f;
 			dst = (1.0f - dst.a) * src + dst;
 
 			pos += stepDist;
