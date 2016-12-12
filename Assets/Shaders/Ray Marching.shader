@@ -19,6 +19,7 @@ Shader "Hidden/Ray Marching/Ray Marching"
 
 	sampler2D _FrontTex;
 	sampler2D _BackTex;
+	uniform sampler2D _TransferTexture;
 	
 	float4 _LightDir;
 	float4 _LightPos;
@@ -28,6 +29,8 @@ Shader "Hidden/Ray Marching/Ray Marching"
 	float _Opacity;
 	float4 _ClipDims;	
 	float4 _ClipPlane;
+
+	uniform float4 _TransferFn[101];
 	
 	v2f vert( appdata_img v ) 
 	{
@@ -67,15 +70,32 @@ Shader "Hidden/Ray Marching/Ray Marching"
 			border *= step(pos.z, _ClipDims.z);
 			border *= step(0, dot(_ClipPlane, float4(pos - 0.5, 1)) + _ClipPlane.w);
 
-	        // Standard blending	        
-	        src.a *= saturate(_Opacity * border);
-	        src.rgb *= src.a;
-	        dst = (1.0f - dst.a) * src + dst;
+			// Standard blending
+			
+			// float4 mappedColor = tex2D(_TransferTexture, float2((int)(src.a * 100.0), 0)); 
+			// float4 mappedColor = _TransferFn[(int)(src.a * 100.0)];
+			// src = mappedColor;
+			src.a *= saturate(_Opacity * border);
+			if (src.a < 0.33 || src.a > 0.34) {
+				src.a = 0;
+			} else {
+				src.a = 0.5;
+			}
+			if(src.a < 0.2f && src.a > 0.1f) {
+				src.r = 0.00f;
+				src.g = 0.04f;
+				src.b = 0.00f;
+			}
+			src.rgb *= src.a;
+			// src.r = 0.01f;
+			// src.g = 0.05f;
+			// src.b = 0.07f;
+			dst = (1.0f - dst.a) * src + dst;
 
 			pos += stepDist;
 		}
 
-    	return dst + dst;
+    return dst + dst;
 	}
 
 	ENDCG

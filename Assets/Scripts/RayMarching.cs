@@ -36,6 +36,14 @@ public class RayMarching : MonoBehaviour
 	private int volumeHeight = 256;
 	[SerializeField]
 	private int volumeDepth = 256;
+
+	[Header("Transfer function")]
+	[SerializeField]
+	private Gradient transferFn = new Gradient();
+	private Texture2D transferTexture;
+	// private Vector4[] colors;
+	// Gradient oldTransferFn = new Gradient();
+
 	[Header("Clipping planes percentage")]
 	[SerializeField]
 	private Vector4 clipDimensions = new Vector4(100, 100, 100, 0);
@@ -54,6 +62,7 @@ public class RayMarching : MonoBehaviour
 	private void Start()
 	{
 		GenerateVolumeTexture();
+    // colors = new Vector4[101];
 	}
 
 	private void OnDestroy()
@@ -83,7 +92,7 @@ public class RayMarching : MonoBehaviour
 			_ppCamera.enabled = false;
 		}
 
-		_ppCamera.CopyFrom(camera);
+		_ppCamera.CopyFrom(GetComponent<Camera>());
 		_ppCamera.clearFlags = CameraClearFlags.SolidColor;
 		_ppCamera.backgroundColor = Color.white;
 		_ppCamera.cullingMask = volumeLayer;
@@ -121,6 +130,23 @@ public class RayMarching : MonoBehaviour
 
 		_rayMarchMaterial.SetFloat("_Opacity", opacity); // Blending strength 
 		_rayMarchMaterial.SetVector("_ClipDims", clipDimensions / 100f); // Clip box
+
+		
+		// for(int i = 0; i < 101; i++) 
+		// {
+		// 	colors[i] = transferFn.Evaluate((float)i / 101.0f);
+		// 	_rayMarchMaterial.SetVector("_TransferFn" + i.ToString(), colors[i]);
+		// }
+		transferTexture = new Texture2D(101, 1, TextureFormat.ARGB32, false);
+		Color[] colors = new Color[transferTexture.width];
+		for(int i = 0; i < transferTexture.width; i++){
+				colors[i] = transferFn.Evaluate((float)i / 100.0f);
+				// print(colors[i]);
+				for(int j = 0; j < transferTexture.height; j++)
+					transferTexture.SetPixel(i, j, colors[i]);
+		}
+		transferTexture.Apply();
+		_rayMarchMaterial.SetTexture("_TransferTexture", transferTexture);
 
 
 		Graphics.Blit(null, volumeTarget, _rayMarchMaterial);
@@ -167,6 +193,11 @@ public class RayMarching : MonoBehaviour
 					{
 						volumeColors[idx].a *= volumeColors[idx].r;
 					}
+					// Color color = transferFn.Evaluate(volumeColors[idx].a);
+					// volumeColors[idx].r = color.r;
+					// volumeColors[idx].g = color.g;
+					// volumeColors[idx].b = color.b;
+					// volumeColors[idx].a = color.a;
 				}
 			}
 		}
