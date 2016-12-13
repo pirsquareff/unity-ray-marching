@@ -27,6 +27,7 @@ Shader "Hidden/Ray Marching/Ray Marching"
 	float _Dimensions;
 	
 	float _Opacity;
+	int _ClippingOption;
 	float4 _ClipDims;	
 	float4 _ClipPlane;
 
@@ -75,37 +76,36 @@ Shader "Hidden/Ray Marching/Ray Marching"
 			// float4 mappedColor = tex2D(_TransferTexture, float2((int)(src.a * 100.0), 0)); 
 			// float4 mappedColor = _TransferFn[(int)(src.a * 100.0)];
 			// src = mappedColor;
-			src.a *= saturate(_Opacity * border);
-			if(src.a > 0.25f) {
-				src.r = 0.04f;
-				src.g = 0.04f;
-				src.b = 0.00f;
-				src.a = 0.00f;
+			if(src.a + 0.08 >= 0.270588235294118 && src.a + 0.08 <= 0.317647058823529) {
+				src.r = 0.2823529412f - 4 * (src.a - 0.270588235294118);
+				src.g = 0.4352941176f + 1 * (src.a - 0.270588235294118);
+				src.b = 1.0f - 1 * (src.a - 0.270588235294118);
+				// src.a = 0.00f;
 			}
-			if(src.a > 0.2f && src.a < 0.25f) {
-				src.r = 0.1f;
-				src.g = 0.6f;
-				src.b = 0.5f;
+			else if(src.a + 0.08 >= 0.317647058823529 && src.a + 0.08 <= 0.380392156862745) {
+				src.r = 1.0f - 4 * (src.a - 0.317647058823529);
+				src.g = 0.7882352941f + 1 * (src.a - 0.317647058823529);
+				src.b = 0.2823529412f - 1 * (src.a - 0.317647058823529);
 				src.a = 0.02f;
 			}
-			if(src.a > 0.15f && src.a < 0.2f) {
-				src.r = 0.6f;
-				src.g = 0.3f;
-				src.b = 0.2f;
-				src.a = 0.02f;
+			else if(src.a + 0.08 >= 0.380392156862745 && src.a + 0.08 <= 0.423529411764706) {
+				src.r = 1.0f - 4 * (src.a - 0.380392156862745);
+				src.g = 0.7882352941f + 1 * (src.a - 0.380392156862745);
+				src.b = 0.2823529412f - 1 * (src.a - 0.380392156862745);
+				src.a = 0.05f;
+			}	
+			else {
+				// src.r = 1.0f - 4 * (src.a - 0.380392156862745);
+				// src.g = 0.7882352941f + 1 * (src.a - 0.380392156862745);
+				// src.b = 0.2823529412f - 1 * (src.a - 0.380392156862745);
+				src.a = 0.0f;
 			}
-			if(src.a > 0.1f && src.a < 0.15f) {
-				src.r = 0.1f;
-				src.g = 0.9f;
-				src.b = 0.1f;
-				src.a = 0.02f;
+			// src.a *= saturate(_Opacity * border);
+			// if(dot(_ClipPlane, float4(pos - 0.5, 1)) + _ClipPlane.w < 0) {
+			if(dot(_ClipPlane, float4(pos - 0.5, 1)) + _ClipPlane.w < 0 || (_ClippingOption == 1 && dot(_ClipPlane, float4(pos - 0.6, 1)) + _ClipPlane.w > 0)) {
+				src.a = 0;
 			}
-			if(src.a > 0.08f && src.a < 0.1f) {
-				src.r = 0.9f;
-				src.g = 0.1f;
-				src.b = 0.1f;
-				src.a = 0.02f;
-			}
+
 			src.rgb *= src.a;
 			dst = (1.0f - dst.a) * src + dst;
 
