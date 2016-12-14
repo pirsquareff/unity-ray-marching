@@ -72,7 +72,7 @@ Shader "Hidden/Ray Marching/Ray Marching"
 			border *= step(0, dot(_ClipPlane, float4(pos - 0.5, 1)) + _ClipPlane.w);
 
 			// Standard blending
-			if(_ShaderNumber == 0) {
+			if(_ShaderNumber == 1) {
 				// GM
 				if(src.a + 0.08 >= 0.270588235294118 && src.a + 0.08 <= 0.317647058823529) {
 					src.r = 0.04f - 2.5 * (src.a - 0.270588235294118);
@@ -85,7 +85,7 @@ Shader "Hidden/Ray Marching/Ray Marching"
 					src.b = 0.0f;
 				}		
 			} 
-			else if(_ShaderNumber == 1) {
+			else if(_ShaderNumber == 2) {
 				// WM
 				if(src.a + 0.08 >= 0.317647058823529 && src.a + 0.08 <= 0.380392156862745) {
 					src.r = 1.0f - 4 * (src.a - 0.317647058823529);
@@ -106,7 +106,7 @@ Shader "Hidden/Ray Marching/Ray Marching"
 					// src.a = 0.0f;
 				}
 			} 
-			else if(_ShaderNumber == 2) {
+			else if(_ShaderNumber == 3) {
 					//Corpus Collosum
 				if(src.a + 0.08 > 0.423529411764706 && src.a + 0.08 <= 0.47843137254902) {
 					src.r = 1.0f - 4 * (src.a - 0.423529411764706);
@@ -119,7 +119,7 @@ Shader "Hidden/Ray Marching/Ray Marching"
 					src.b = 0.0f;
 				}
 			} 
-			else if(_ShaderNumber == 3) {
+			else if(_ShaderNumber == 4) {
 				// GM & WM
 				if(src.a + 0.08 >= 0.270588235294118 && src.a + 0.08 <= 0.317647058823529) {
 					src.r = 0.04f - 2.5 * (src.a - 0.270588235294118);
@@ -150,7 +150,7 @@ Shader "Hidden/Ray Marching/Ray Marching"
 				}
 			
 			} 
-			else if(_ShaderNumber == 4) {
+			else if(_ShaderNumber == 5) {
 					//WM & Corpus
 				if(src.a + 0.08 > 0.423529411764706 && src.a + 0.08 <= 0.47843137254902) {
 						src.r = 1.0f - 4 * (src.a - 0.423529411764706);
@@ -176,7 +176,7 @@ Shader "Hidden/Ray Marching/Ray Marching"
 					// src.a = 0.0f;
 				}
 			} 
-			else if(_ShaderNumber == 5) {
+			else if(_ShaderNumber == 6) {
 				//GM & Corpus
 				if(src.a + 0.08 > 0.423529411764706 && src.a + 0.08 <= 0.47843137254902) {
 					src.r = 1.0f - 4 * (src.a - 0.423529411764706);
@@ -194,7 +194,7 @@ Shader "Hidden/Ray Marching/Ray Marching"
 					src.b = 0.0f;
 					// src.a = 0.0f;
 				}	
-			} else if(_ShaderNumber == 6) {
+			} else if(_ShaderNumber == 7) {
 					// Combo All
 				if(src.a + 0.08 > 0.423529411764706 && src.a + 0.08 <= 0.47843137254902) {
 					// pink
